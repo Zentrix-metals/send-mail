@@ -65,17 +65,25 @@ export default async function handler(
       },
     });
 
-    await transporter.sendMail({
-      from: smtpUser,
-      to: 'recruitment.department121@gmail.com',
-      replyTo: email.trim(),
-      subject: `New contact request from ${name.trim()}`,
-      text: `Name: ${name.trim()}\nEmail: ${email.trim()}\n\nMessage:\n${message.trim()}`,
-    });
+    const info = await transporter.sendMail({
+  from: smtpUser,
+  to: process.env.EMAIL_TO || smtpUser,
+  replyTo: email.trim(),
+  subject: `New contact request from ${name.trim()}`,
+  text: `Name: ${name.trim()}\nEmail: ${email.trim()}\n\nMessage:\n${message.trim()}`,
+});
 
-    return res.status(200).json({
-      message: 'Message sent successfully',
-    });
+console.log('SMTP send result:', {
+  messageId: info.messageId,
+  accepted: info.accepted,
+  rejected: info.rejected,
+  response: info.response,
+  envelope: info.envelope,
+});
+
+return res.status(200).json({
+  message: 'Message sent successfully',
+});
   } catch (error) {
     console.error('Error sending email through SMTP:', error);
 

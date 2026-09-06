@@ -67,7 +67,7 @@ export default async function handler(
 
     await transporter.sendMail({
       from: smtpUser,
-      to: smtpUser,
+      to: 'recruitment.department121@gmail.com',
       replyTo: email.trim(),
       subject: `New contact request from ${name.trim()}`,
       text: `Name: ${name.trim()}\nEmail: ${email.trim()}\n\nMessage:\n${message.trim()}`,

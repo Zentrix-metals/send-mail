@@ -1,7 +1,4 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import http from 'node:http';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import nodemailer from 'nodemailer';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -77,79 +74,6 @@ export default async function handler(
     return res.status(500).json({ message: 'Failed to send message' });
   }
 }
-
-// Built-in lightweight local development server for environments outside Vercel
-const isDirectExecution =
-  typeof process.argv[1] === 'string' &&
-  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
-
-if (isDirectExecution && !process.env.VERCEL) {
-  const port = Number(process.env.PORT) || 3000;
-
-  const server = http.createServer((req, res) => {
-    const vercelRes = res as unknown as VercelResponse;
-    vercelRes.status = (statusCode: number) => {
-      res.statusCode = statusCode;
-      return vercelRes;
-    };
-    vercelRes.json = (jsonBody: unknown) => {
-      res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify(jsonBody));
-      return vercelRes;
-    };
-    vercelRes.send = (sendBody: unknown) => {
-      if (typeof sendBody === 'object') {
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify(sendBody));
-      } else {
-        res.end(String(sendBody));
-      }
-      return vercelRes;
-    };
-
-    const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
-
-    if (url.pathname === '/api/contact') {
-      let data = '';
-      req.on('data', (chunk) => {
-        data += chunk;
-      });
-      req.on('end', async () => {
-        let parsedBody: unknown = null;
-        if (data) {
-          try {
-            parsedBody = JSON.parse(data);
-          } catch {
-            parsedBody = data;
-          }
-        }
-        (req as unknown as VercelRequest).body = parsedBody;
-
-        try {
-          await handler(req as unknown as VercelRequest, vercelRes);
-        } catch (err) {
-          console.error('Local server error:', err);
-          if (!res.writableEnded) {
-            res.statusCode = 500;
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({ message: 'Failed to send message' }));
-          }
-        }
-      });
-    } else {
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'application/json');
-      res.end(
-        JSON.stringify({
-          service: 'contact-email-service',
-          status: 'running',
-          endpoint: '/api/contact',
-          method: 'POST',
-        })
-      );
-    }
-  });
-
   server.listen(port, () => {
     console.log(`Contact email service running at http://localhost:${port}/api/contact`);
   });

@@ -1,0 +1,21 @@
+{
+  "name": "contact-email-service",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Minimal Vercel serverless function for contact form email delivery via SMTP",
+  "scripts": {
+    "dev": "node --experimental-strip-types api/contact.ts",
+    "start": "node --experimental-strip-types api/contact.ts",
+    "build": "tsc --noEmit"
+  },
+  "dependencies": {
+    "nodemailer": "^6.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "@types/nodemailer": "^6.4.17",
+    "@vercel/node": "^5.1.8",
+    "typescript": "^5.8.2"
+  }
+}

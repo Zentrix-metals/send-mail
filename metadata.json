@@ -1,0 +1,6 @@
+{
+  "name": "Contact Email Service",
+  "description": "Minimal TypeScript API deployed as a Vercel Serverless Function to receive contact form submissions and send emails via GoDaddy/Titan SMTP using Nodemailer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

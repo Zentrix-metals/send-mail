@@ -45,8 +45,13 @@ export default async function handler(
   const smtpPassword = process.env.SMTP_PASSWORD;
 
   if (!smtpUser || !smtpPassword) {
-    console.error('Missing SMTP_USER or SMTP_PASSWORD environment variables.');
-    return res.status(500).json({ message: 'Failed to send message' });
+    console.error(
+      'Missing SMTP_USER or SMTP_PASSWORD environment variables.'
+    );
+
+    return res.status(500).json({
+      message: 'Failed to send message',
+    });
   }
 
   try {
@@ -68,13 +73,14 @@ export default async function handler(
       text: `Name: ${name.trim()}\nEmail: ${email.trim()}\n\nMessage:\n${message.trim()}`,
     });
 
-    return res.status(200).json({ message: 'Message sent successfully' });
+    return res.status(200).json({
+      message: 'Message sent successfully',
+    });
   } catch (error) {
     console.error('Error sending email through SMTP:', error);
-    return res.status(500).json({ message: 'Failed to send message' });
+
+    return res.status(500).json({
+      message: 'Failed to send message',
+    });
   }
-}
-  server.listen(port, () => {
-    console.log(`Contact email service running at http://localhost:${port}/api/contact`);
-  });
 }

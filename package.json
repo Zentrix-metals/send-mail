@@ -5,8 +5,6 @@
   "type": "module",
   "description": "Minimal Vercel serverless function for contact form email delivery via SMTP",
   "scripts": {
-    "dev": "node --experimental-strip-types api/contact.ts",
-    "start": "node --experimental-strip-types api/contact.ts",
     "build": "tsc --noEmit"
   },
   "dependencies": {
